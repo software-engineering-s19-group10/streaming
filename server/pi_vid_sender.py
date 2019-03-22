@@ -1,4 +1,4 @@
-import cv2, numpy, logging
+import cv2, numpy, logging, base64
 from websocket_server import WebsocketServer
 from time import sleep
 
@@ -33,13 +33,12 @@ def start_sending(client, server):
 
         if ret:
             # Convert to bytes
-            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-            result, imgencode = cv2.imencode('.jpg', frame, encode_param)
-            data = numpy.array(imgencode)
-            stringData = data.tostring()
+            retval, buffer = cv2.imencode('.jpg', frame)
+            img_str = base64.b64encode(buffer)
 
             # Send the frame
-            server.send_message(client, stringData)
+            server.send_message(client, img_str.decode("utf-8"))
+            print("Sending following data" + img_str.decode("utf-8"))
 
             # Throttling to 10 FPS
             sleep(0.1)
