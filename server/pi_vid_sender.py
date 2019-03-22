@@ -2,7 +2,7 @@ import cv2, numpy, logging, base64
 from websocket_server import WebsocketServer
 from time import sleep
 
-PORT = 51342
+PORT = 8080
 
 # Testing purposes
 def cap():
