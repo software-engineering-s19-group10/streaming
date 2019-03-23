@@ -1,6 +1,7 @@
-import cv2, numpy, logging, base64
+import cv2, numpy, logging, base64, io, binascii
 from websocket_server import WebsocketServer
 from time import sleep
+from PIL import Image
 
 PORT = 8080
 
@@ -27,17 +28,23 @@ def start_sending(client, server):
     i = 0
     # Keep sending forever until ???
     while True:
+        sleep(1)
         # Get the frame
         # Capture frame-by-frame
         ret, frame = vid.read()
 
         if ret:
             # Convert to bytes
+            pil_im = Image.fromarray(frame)
+            b = io.BytesIO()
+            pil_im.save(b, 'jpeg')
+            im_bytes = b.getvalue()
+
             retval, buffer = cv2.imencode('.jpg', frame)
             img_str = base64.b64encode(buffer)
 
             # Send the frame
-            server.send_message(client, img_str.decode("utf-8"))
+            server.send_message(client, binascii.b2a_base64(im_bytes))
             print("Sending following data" + img_str.decode("utf-8"))
 
             # Throttling to 10 FPS
