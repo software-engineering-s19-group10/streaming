@@ -25,7 +25,17 @@ def start_sending(client, server):
     # Create a VideoSender and start sending video
     vid = cv2.VideoCapture(0)
 
-    i = 0
+    if not vid.isOpened():
+        print("Could not open video feed")
+        return
+
+    vid.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
+    vid.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
+    
+    print("Connected")
+
+
+    print("Sending Data Now")
     # Keep sending forever until ???
     while True:
         sleep(1)
@@ -40,14 +50,10 @@ def start_sending(client, server):
             pil_im.save(b, 'jpeg')
             im_bytes = b.getvalue()
 
-            retval, buffer = cv2.imencode('.jpg', frame)
-            img_str = base64.b64encode(buffer)
-
             # Send the frame
             server.send_message(client, binascii.b2a_base64(im_bytes))
-            print("Sending following data" + img_str.decode("utf-8"))
 
-            # Throttling to 10 FPS
+            # Throttling to 0.1 FPS
             sleep(0.1)
         else:
             continue

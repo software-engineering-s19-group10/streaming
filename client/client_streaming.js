@@ -1,48 +1,52 @@
+
 // Set port and URL
 PORT = 8080;
-URL = "localhost:8080";
+URL = "cece71f6.ngrok.io";
 
-console.log("Creating Socket")
+// Create the socket
+console.log("Creating Socket.");
 const socket = new WebSocket('ws://' + URL);
-console.log("Tewerqwerqerwqwqrqwerst here");
+console.log("Socket Created.");
 
 
+// Event Handler for opening the connection
 socket.onopen = function(event) {
     console.log("Connected.");
 }
 
 
+// function to convert to base 64. got off stackoverflow... as expected
 function b64EncodeUnicode(str) {
     // first we use encodeURIComponent to get percent-encoded UTF-8,
     // then we convert the percent encodings into raw bytes which
     // can be fed into btoa.
-    console.log("Test hqwerere");
+    console.log("Converting to base 64.");
     return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
         function toSolidBytes(match, p1) {
-            console.log("Testqwerwqreqwerhere");
             return String.fromCharCode('0x' + p1);
     }));
 }
 
 
 window.onload = function(event) {
-    console.log("Test here");
+    console.log("Window loaded")
+    socket.onmessage = function(event) {
+        console.log("Frame received.");
 
-    while(!window.closed) {
-        console.log("Receiving frame.");
-        /*socket.onmessage = function(event) {
-            console.log("adata redcg");
+        // get frame as a string 
+        let frameSTR = event.data;        
 
-            let frameSTR = event.data;
+        // convert to base 64
+        // apparently not necessary
+        //let jpgbuffer = b64EncodeUnicode(frameSTR);
+        //console.log("Frame converted to base 64.");
 
-            let jpgbuffer = b64EncodeUnicode(frameSTR);
+        console.log("Adding JPEG headers");
+        var datajpg = "data:image/jpg;base64," + frameSTR;
+        console.log("JPEG Headers Added.");
 
-            // TODO: display jpg somehow
-            var datajpg = "data:image/jpg;base64," + b64encoded;
-            document.getElementById("vid_feed").src = datajpg;
+        document.getElementById("latestImage").src = datajpg;
 
-            console.log("Received data");
-        }*/
     }
 }
 
