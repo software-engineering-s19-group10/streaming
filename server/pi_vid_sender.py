@@ -54,7 +54,7 @@ def start_sending(client, server):
             server.send_message(client, binascii.b2a_base64(im_bytes))
 
             # Throttling to 0.1 FPS
-            sleep(0.1)
+            # sleep(0.01)
         else:
             continue
 

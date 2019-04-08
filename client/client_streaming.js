@@ -1,7 +1,7 @@
 
 // Set port and URL
 PORT = 8080;
-URL = "cece71f6.ngrok.io";
+URL = "a81162e9.ngrok.io";
 
 // Create the socket
 console.log("Creating Socket.");
@@ -14,45 +14,60 @@ socket.onopen = function(event) {
     console.log("Connected.");
 }
 
-
-// function to convert to base 64. got off stackoverflow... as expected
-function b64EncodeUnicode(str) {
-    // first we use encodeURIComponent to get percent-encoded UTF-8,
-    // then we convert the percent encodings into raw bytes which
-    // can be fed into btoa.
-    console.log("Converting to base 64.");
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
-        function toSolidBytes(match, p1) {
-            return String.fromCharCode('0x' + p1);
-    }));
-}
-
-
 window.onload = function(event) {
-    console.log("Window loaded")
+    console.log("Window loaded");
+
+    // Boolean to check if we should render the image or not. I.E. is it paused?
+    var isPlaying = true;
+
+    // Get glyph span from play button from DOM
+    let play_glyph = document.getElementById("play-pause");
+
+    // Get play button from DOM.
+    let play_btn = document.getElementById("play-btn");
+
+    // Toggle play on click of button
+    play_btn.addEventListener("click", function() {
+        console.log("Changing from isPlaying:" + isPlaying + "to " + !isPlaying + ".");
+        // Change the icon
+        if(isPlaying) {
+            play_glyph.className = "glyphicon glyphicon-play";
+        } else {
+            play_glyph.className = "glyphicon glyphicon-pause";
+        }
+
+        // Toggle between play and pause
+        isPlaying = !isPlaying;
+    });
+
+
+    // Get the image element from the DOM
+    let imgelement = document.getElementById("latestImage");
+    
+    // Event handler for receiving a message.
     socket.onmessage = function(event) {
+
         console.log("Frame received.");
 
-        // get frame as a string 
+        // Get the frame which is an encoded JPEG image.
         let frameSTR = event.data;        
 
-        // convert to base 64
-        // apparently not necessary
-        //let jpgbuffer = b64EncodeUnicode(frameSTR);
-        //console.log("Frame converted to base 64.");
-
+        // Add headers for the JPEG
         console.log("Adding JPEG headers");
         var datajpg = "data:image/jpg;base64," + frameSTR;
         console.log("JPEG Headers Added.");
-
-        document.getElementById("latestImage").src = datajpg;
+        
+        if(isPlaying) {
+            console.log("Rendering Image.");
+            // Display on screen.
+            imgelement.src = datajpg;
+        }
 
     }
 }
 
-
+// Close the socket when the window is closed.
 window.onbeforeunload = function(event) {
     console.log("Closing connection.");
-
     socket.close();
 }
