@@ -1,0 +1,4 @@
+websocket==0.2.1
+websocket-server==0.4
+numpy==1.16.2
+Pillow==5.4.1

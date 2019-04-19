@@ -1,7 +1,7 @@
 
 // Set port and URL
 PORT = 8080;
-URL = "a81162e9.ngrok.io";
+URL = "127.0.0.1:8080";
 
 // Create the socket
 console.log("Creating Socket.");
