@@ -7,6 +7,8 @@ import socket as sock
 
 BASE_URL = "https://boiling-reef-89836.herokuapp.com/lock_owners/"
 
+from datetime import datetime
+
 AUTH_TOKEN = -1
 
 
@@ -72,15 +74,20 @@ def create_lock(lock_owner=user_info["id"], address="54 Brett Rd., Piscataway, N
     return
 
 
-def post_ip_address(lock_owner=user_info["id"], address="54 Brett Rd., Piscataway, NJ", ip_address=get_ip()):
+def post_image(visitor, filename, img_buffer, image_datetime=datetime.now(), lock=lock_info["id"]):
+    route = 'api/post_image'
+    params = {"Authorization": AUTH_TOKEN, "lock": lock, "image_datetime": image_datetime, "img_buffer": img_buffer, "filename": filename, "visitor": visitor}
+    req.post(BASE_URL + route, params)
+    return
+
+
+def post_ip_address(lock_owner=lock_info["id"], address=lock_info["address"], ip_address=get_ip()):
     route = 'api/locks/'
     params = {"Authorization": AUTH_TOKEN, "lock_owner": lock_owner, "address": address, "ip_address": ip_address}
     req.patch(BASE_URL + route, params)
     return
 
 post_ip_address()
-
-lock_info = get_lock()
 
 
 def post_srn(lat, longitude, date_str, lock_id):
@@ -94,5 +101,5 @@ def post_srn(lat, longitude, date_str, lock_id):
 def send_sms(phone_number, message):
     route = "api/notify/"
     params = {"Authorization": AUTH_TOKEN, "dest": phone_number, "content": message}
-    req.get(BASE_URL + route, params)
+    req.post(BASE_URL + route, params)
     return 
