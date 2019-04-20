@@ -47,7 +47,34 @@ def create_server():
     server.run_forever()
 
 
+def print_im():
+    print("Sending Data Now")
+
+    # Keep sending forever until connection terminated
+    while True:
+
+        frame = get_frame(vid)
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        if not frame is None:
+
+            # Convert to bytes
+            pil_im = Image.fromarray(frame)
+            b = io.BytesIO()
+
+            # convert to jpeg encoding
+            pil_im.save(b, 'jpeg')
+            im_bytes = b.getvalue()
+
+            print(binascii.b2a_base64(im_bytes))
+            break
+
+
+        else:
+            continue
+
 # TODO: Program will take one command line argument which will be the auth key
 if __name__=="__main__":
-    # api_handler.post_ip_address()
+    # print_im()
     create_server()

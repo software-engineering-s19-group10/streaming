@@ -60,9 +60,8 @@ def get_public_ip():
 def get_lock(lock_owner=user_info["id"]):
     route = 'api/locks/'
     params = {"Authorization": AUTH_TOKEN, "lock_owner": lock_owner}
-    res = req.post(BASE_URL + route, params).text
-    print(res)
-    return
+    res = req.post(BASE_URL + route, params).json()
+    return res
 
 
 lock_info = get_lock()
@@ -102,4 +101,4 @@ def send_sms(phone_number, message):
     route = "api/notify/"
     params = {"Authorization": AUTH_TOKEN, "dest": phone_number, "content": message}
     req.post(BASE_URL + route, params)
-    return 
+    return
